@@ -1,9 +1,9 @@
 
 public class TennisGame1 implements TennisGame {
 
-    private int m_score1 = 0;
-    private int m_score2 = 0;
-    private String player1Name;
+    private int playerOneScore = 0;
+    private int playerTwoScore = 0;
+    private final String player1Name;
     private String player2Name;
 
     public TennisGame1(String player1Name, String player2Name) {
@@ -12,44 +12,25 @@ public class TennisGame1 implements TennisGame {
     }
 
     public void wonPoint(String playerName) {
-        if (playerName == "player1")
-            m_score1 += 1;
-        else
-            m_score2 += 1;
+        if (playerName.equals(this.player1Name)) {
+            playerOneScore = incrementScore(playerOneScore);
+        } else {
+            playerTwoScore = incrementScore(playerTwoScore);
+        }
     }
 
     public String getScore() {
-        String score = "";
-        boolean isEqualScore = m_score1 == m_score2;
-        if (isEqualScore) {
-            score = calculateScoreWhenEquals(m_score1);
-        } else if (isGreaterOrEqualThanFour(m_score1) || isGreaterOrEqualThanFour(m_score2)) {
-            score = calculateScoreWhenGreaterThanFour(m_score1, m_score2);
+        if (playerOneScore == playerTwoScore) {
+            return calculateScoreWhenEquals(playerOneScore);
+        } else if (isGreaterOrEqualThanFour(playerOneScore) || isGreaterOrEqualThanFour(playerTwoScore)) {
+            return calculateScoreWhenGreaterThanFour(playerOneScore, playerTwoScore);
         } else {
-            int tempScore = 0;
-            for (int i = 1; i < 3; i++) {
-                if (i == 1) tempScore = m_score1;
-                else {
-                    score += "-";
-                    tempScore = m_score2;
-                }
-                switch (tempScore) {
-                    case 0:
-                        score += "Love";
-                        break;
-                    case 1:
-                        score += "Fifteen";
-                        break;
-                    case 2:
-                        score += "Thirty";
-                        break;
-                    case 3:
-                        score += "Forty";
-                        break;
-                }
-            }
+            return calculateDefault(playerOneScore, playerTwoScore);
         }
-        return score;
+    }
+
+    private int incrementScore(int score) {
+        return score + 1;
     }
 
     private boolean isGreaterOrEqualThanFour(int score) {
@@ -66,11 +47,25 @@ public class TennisGame1 implements TennisGame {
     }
 
     private String calculateScoreWhenGreaterThanFour(int playerOneScore, int playerTwoScore) {
-        int minusResult = m_score1 - m_score2;
+        int minusResult = playerOneScore - playerTwoScore;
         if (minusResult == 1) return "Advantage player1";
         if (minusResult == -1) return "Advantage player2";
         if (minusResult >= 2) return "Win for player1";
         return "Win for player2";
     }
-    
+
+    private String calculateDefault(int playerOneScore, int playerTwoScore) {
+        return scoreAsName(playerOneScore) + "-" + scoreAsName(playerTwoScore);
+    }
+
+    private String scoreAsName(int playerScore) {
+        return switch (playerScore) {
+            case 0 -> "Love";
+            case 1 -> "Fifteen";
+            case 2 -> "Thirty";
+            case 3 -> "Forty";
+            default -> throw new RuntimeException();
+        };
+    }
+
 }
