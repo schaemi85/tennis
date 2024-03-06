@@ -1,3 +1,4 @@
+import java.text.MessageFormat;
 
 public class TennisGame1 implements TennisGame {
 
@@ -55,7 +56,7 @@ public class TennisGame1 implements TennisGame {
     }
 
     private String calculateDefault(int playerOneScore, int playerTwoScore) {
-        return scoreAsName(playerOneScore) + "-" + scoreAsName(playerTwoScore);
+        return MessageFormat.format("{0}-{1}", scoreAsName(playerOneScore), scoreAsName(playerTwoScore));
     }
 
     private String scoreAsName(int playerScore) {
